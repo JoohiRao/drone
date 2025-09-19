@@ -27,11 +27,17 @@ if (process.env.NODE_ENV === "production") {
   const frontendPath = path.join(__dirname, "../frontend/dist");
   app.use(express.static(frontendPath));
 
-  // Catch-all route for React Router
-  app.get("/*", (req, res) => {
-    res.sendFile(path.join(frontendPath, "index.html"));
+  // Catch-all middleware for React Router
+  app.use((req, res, next) => {
+    // Only handle GET requests
+    if (req.method === "GET") {
+      res.sendFile(path.join(frontendPath, "index.html"));
+    } else {
+      next();
+    }
   });
 }
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
